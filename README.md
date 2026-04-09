@@ -2,7 +2,7 @@
 
 App de consola en Python para gestionar reservas de la cancha de una unidad residencial.
 
-## Caracteristicas
+## Caracteristicasdd
 
 - Ver horarios disponibles por dia (proximos 7 dias)
 - Reservar un bloque de 1 hora por apartamento
