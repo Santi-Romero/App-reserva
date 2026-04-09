@@ -1,10 +1,10 @@
 from models.reserva import init_db
-from gui import ReservaApp
+from gui import LoginWindow
 
 
 def main():
     init_db()
-    app = ReservaApp()
+    app = LoginWindow()
     app.mainloop()
 
 
