@@ -4,6 +4,90 @@ from datetime import date, datetime
 from models import reserva as model
 
 
+class LoginWindow(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Iniciar sesión")
+        self.geometry("420x520")
+        self.resizable(False, False)
+        self.configure(background="#eef3fb")
+
+        self._init_style()
+        self._create_widgets()
+        self._centrar()
+
+    def _init_style(self):
+        style = ttk.Style(self)
+        style.theme_use("clam")
+        style.configure("TFrame", background="#eef3fb")
+        style.configure("Card.TFrame", background="#ffffff", relief="flat")
+        style.configure("TLabel", background="#eef3fb", font=("Segoe UI", 11), foreground="#2d4763")
+        style.configure("Card.TLabel", background="#ffffff", font=("Segoe UI", 11), foreground="#2d4763")
+        style.configure("Header.TLabel", font=("Segoe UI", 22, "bold"), foreground="#1f4e79", background="#eef3fb")
+        style.configure("Sub.TLabel", font=("Segoe UI", 11), foreground="#475569", background="#eef3fb")
+        style.configure("CardSub.TLabel", font=("Segoe UI", 10), foreground="#64748b", background="#ffffff")
+        style.configure("Accent.TButton", font=("Segoe UI", 11, "bold"), foreground="white",
+                        background="#2563eb", padding=12)
+        style.map("Accent.TButton",
+                  background=[("active", "#1d4ed8"), ("pressed", "#1e40af")])
+        style.configure("TEntry", padding=8, relief="flat", font=("Segoe UI", 11))
+
+    def _create_widgets(self):
+        # ── Logo / Título ──────────────────────────────
+        top = ttk.Frame(self, padding=(0, 40, 0, 24))
+        top.pack(fill="x")
+        ttk.Label(top, text="🏟", font=("Segoe UI", 42), background="#eef3fb").pack()
+        ttk.Label(top, text="Reservas de Cancha", style="Header.TLabel").pack(pady=(8, 2))
+        ttk.Label(top, text="Unidad Residencial", style="Sub.TLabel").pack()
+
+        # ── Card de login ──────────────────────────────
+        card = ttk.Frame(self, style="Card.TFrame", padding=28)
+        card.pack(fill="x", padx=36, pady=(0, 10))
+        card.columnconfigure(0, weight=1)
+
+        ttk.Label(card, text="Usuario", style="Card.TLabel",
+                  font=("Segoe UI", 10, "bold")).grid(row=0, column=0, sticky="w", pady=(0, 4))
+        self.entry_usuario = ttk.Entry(card, font=("Segoe UI", 11))
+        self.entry_usuario.grid(row=1, column=0, sticky="ew", pady=(0, 16), ipady=4)
+        self.entry_usuario.insert(0, "admin")
+
+        ttk.Label(card, text="Contraseña", style="Card.TLabel",
+                  font=("Segoe UI", 10, "bold")).grid(row=2, column=0, sticky="w", pady=(0, 4))
+        self.entry_pass = ttk.Entry(card, show="●", font=("Segoe UI", 11))
+        self.entry_pass.grid(row=3, column=0, sticky="ew", pady=(0, 6), ipady=4)
+        self.entry_pass.bind("<Return>", lambda e: self._login())
+
+        self.lbl_error = ttk.Label(card, text="", foreground="#b91c1c",
+                                   background="#ffffff", font=("Segoe UI", 10))
+        self.lbl_error.grid(row=4, column=0, sticky="w", pady=(0, 16))
+
+        ttk.Button(card, text="Iniciar sesión", style="Accent.TButton",
+                   command=self._login).grid(row=5, column=0, sticky="ew")
+
+        # ── Hint ──────────────────────────────────────
+        ttk.Label(self, text="Usuario: admin  |  Contraseña: PIN configurado",
+                  style="Sub.TLabel", font=("Segoe UI", 9)).pack(pady=(6, 0))
+
+    def _login(self):
+        usuario = self.entry_usuario.get().strip()
+        password = self.entry_pass.get().strip()
+        if usuario == "admin" and password == model.ADMIN_PIN:
+            self.destroy()
+            app = ReservaApp()
+            app.mainloop()
+        else:
+            self.lbl_error.config(text="Usuario o contraseña incorrectos.")
+            self.entry_pass.delete(0, tk.END)
+            self.entry_pass.focus()
+
+    def _centrar(self):
+        self.update_idletasks()
+        w, h = 420, 520
+        x = (self.winfo_screenwidth() - w) // 2
+        y = (self.winfo_screenheight() - h) // 2
+        self.geometry(f"{w}x{h}+{x}+{y}")
+
+
 class ReservaApp(tk.Tk):
     def __init__(self):
         super().__init__()
